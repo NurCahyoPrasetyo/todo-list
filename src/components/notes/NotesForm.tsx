@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useAuth } from "@/context/AuthContext";
-import { fetchCreateNote } from "@/services/api/noteService";
+import { fetchCreateCheckList } from "@/services/api/noteService";
 
 type NotesFormProps = {
   onSuccess: () => void;
@@ -11,7 +11,6 @@ const NotesForm: React.FC<NotesFormProps> = ({ onSuccess }) => {
   const { token } = useAuth();
 
   const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
   const [error, setError] = useState("");
   const [isLoding, setIsLoading] = useState(false);
 
@@ -31,11 +30,10 @@ const NotesForm: React.FC<NotesFormProps> = ({ onSuccess }) => {
     setIsLoading(true);
 
     try {
-      await fetchCreateNote(title, body, token);
+      await fetchCreateCheckList(title, token);
       await onSuccess();
       setIsLoading(false);
       setTitle("");
-      setBody("");
     } catch (err) {
       setIsLoading(false);
       if (err instanceof Error) {
@@ -58,17 +56,6 @@ const NotesForm: React.FC<NotesFormProps> = ({ onSuccess }) => {
         className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-      />
-      <label className="font-semibold text-sm text-gray-600 pb-1 block">
-        Body
-      </label>
-      <textarea
-        cols={10}
-        rows={3}
-        required
-        className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full"
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
       />
       <button
         type="submit"
