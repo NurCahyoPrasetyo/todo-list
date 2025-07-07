@@ -40,6 +40,60 @@ export async function fetchDeleteCheckList(
   return res.data;
 }
 
+export async function fetchCreateCheckItem(
+  id: number,
+  itemName: string,
+  token?: string | null
+): Promise<Note> {
+  const res = await apiClient<ApiResponse<Note>>(`/checklist/${id}/item`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ itemName }),
+  });
+
+  return res.data;
+}
+
+export async function fetchCheckedItem(
+  id: number,
+  idItem: number,
+  token?: string | null
+): Promise<Note> {
+  const res = await apiClient<ApiResponse<Note>>(
+    `/checklist/${id}/item/${idItem}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return res.data;
+}
+
+export async function fetchRenameItem(
+  id: number,
+  idItem: number,
+  itemName: string,
+  token?: string | null
+): Promise<Note> {
+  const res = await apiClient<ApiResponse<Note>>(
+    `/checklist/${id}/item/${idItem}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ itemName }),
+    }
+  );
+
+  return res.data;
+}
+
 export async function fetchGetNoteArchived(
   token?: string | null
 ): Promise<Note> {

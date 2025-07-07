@@ -7,9 +7,12 @@ import NotesList from "@/components/notes/NotesList";
 import { useAuth } from "@/context/AuthContext";
 import {
   fetchArchivedNote,
+  fetchCheckedItem,
+  fetchCreateCheckItem,
   fetchDeleteCheckList,
   fetchDeleteNote,
   fetchGetCheckList,
+  fetchRenameItem,
   fetchUnArchivedNote,
 } from "@/services/api/noteService";
 import { Note } from "@/types/api";
@@ -47,6 +50,58 @@ const DashboardPage = () => {
       await fetchDeleteCheckList(id, token);
       await handleGetNote();
     } catch (err) {
+      console.error("Error creating note:", err);
+    }
+  };
+
+  const handleCreateItemNote = async (id: number, name: string) => {
+    if (!token) return;
+
+    try {
+      setIsLoading(true);
+      const res = await fetchCreateCheckItem(id, name, token);
+      if (res) {
+        await handleGetNote();
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.error("Error creating note:", err);
+    }
+  };
+
+  const handleCheckItemNote = async (id: number, itemId: number) => {
+    if (!token) return;
+
+    try {
+      setIsLoading(true);
+      const res = await fetchCheckedItem(id, itemId, token);
+      if (res) {
+        await handleGetNote();
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.error("Error creating note:", err);
+    }
+  };
+
+  const handleRenameItemNote = async (
+    id: number,
+    itemId: number,
+    name: string
+  ) => {
+    if (!token) return;
+
+    try {
+      setIsLoading(true);
+      const res = await fetchRenameItem(id, itemId, name, token);
+      if (res) {
+        await handleGetNote();
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
       console.error("Error creating note:", err);
     }
   };
@@ -101,7 +156,12 @@ const DashboardPage = () => {
           <NotesList
             lists={listNotes}
             onAction={(id, isArchived) => handleArchivedNote(id, isArchived)}
+            onCreateItem={(id, name) => handleCreateItemNote(id, name)}
+            onCheckItem={(id, itemId) => handleCheckItemNote(id, itemId)}
             onRemove={(id) => handleRemovedNote(id)}
+            onRenameItem={(id, itemId, name) =>
+              handleRenameItemNote(id, itemId, name)
+            }
           />
         </div>
       )}
